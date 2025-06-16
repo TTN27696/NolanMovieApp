@@ -1,6 +1,5 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,7 +10,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -40,17 +38,30 @@ kotlin {
     }
 }
 
+val tmdbApiKey: String = project
+    .rootProject
+    .file("local.properties")
+    .inputStream()
+    .use { Properties().apply { load(it) } }
+    .getProperty("TMDB_API_KEY") ?: ""
+
 android {
     namespace = "org.example.nolan_movie_app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
+        buildConfigField("String", "TMDB_API_KEY", "\"$tmdbApiKey\"")
         applicationId = "org.example.nolan_movie_app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

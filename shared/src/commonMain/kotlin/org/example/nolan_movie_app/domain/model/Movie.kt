@@ -3,7 +3,8 @@ package org.example.nolan_movie_app.domain.model
 data class Movie (
     val id: Int,
     val title: String,
-    val releaseYear: String,
-    val voteAverage: Double,
     val posterUrl: String
-)
+) {
+    val formatPosterUrl: String
+        get() = "https://image.tmdb.org/t/p/w500$posterUrl"
+}

@@ -1,21 +1,29 @@
 package org.example.nolan_movie_app.data.remote
 
-import org.example.nolan_movie_app.domain.model.Movie
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import org.example.nolan_movie_app.data.remote.model.MovieDto
+import org.example.nolan_movie_app.data.remote.model.MovieResponseDto
 
-class TmdbApi {
-    suspend fun fetchTrending(): List<Movie> {
-        // Fake mock data for now
-        return listOf(
-            Movie(1, "Interstellar", "2014", 8.6, "https://image.tmdb.org/t/p/w500/interstellar.jpg"),
-            Movie(2, "Inception", "2010", 8.7, "https://image.tmdb.org/t/p/w500/inception.jpg")
-        )
+class TmdbApi(
+    private val client: HttpClient
+) {
+    suspend fun getTrendingMovies(): List<MovieDto> {
+        val response: MovieResponseDto = client.get("https://api.themoviedb.org/3/trending/movie/day") {
+            parameter("language", "en-US")
+        }.body()
+
+        return response.results ?: emptyList()
     }
 
-    suspend fun search(query: String): List<Movie> {
-        // Fake mock data for now
-        return listOf(
-            Movie(1, "Interstellar", "2014", 8.6, "https://image.tmdb.org/t/p/w500/interstellar.jpg"),
-            Movie(2, "Inception", "2010", 8.7, "https://image.tmdb.org/t/p/w500/inception.jpg")
-        )
+    suspend fun searchMovies(query: String): List<MovieDto> {
+        val response: MovieResponseDto = client.get("https://api.themoviedb.org/3/search/movie") {
+            parameter("query", query)
+            parameter("language", "en-US")
+        }.body()
+
+        return response.results ?: emptyList()
     }
 }

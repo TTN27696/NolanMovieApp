@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import org.example.nolan_movie_app.di.androidModule
+import org.example.nolan_movie_app.di.configModule
 import org.example.nolan_movie_app.di.sharedModule
 import org.example.nolan_movie_app.screen.MovieListScreen
 import org.koin.android.ext.koin.androidContext
@@ -18,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         startKoin {
             androidContext(this@MainActivity)
-            modules(sharedModule, androidModule)
+            modules(configModule, networkModule, sharedModule, androidModule)
         }
         setContent {
             MovieListScreen()

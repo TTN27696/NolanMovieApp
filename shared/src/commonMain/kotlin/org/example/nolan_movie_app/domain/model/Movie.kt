@@ -1,5 +1,8 @@
 package org.example.nolan_movie_app.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Movie (
     val id: Int,
     val title: String,

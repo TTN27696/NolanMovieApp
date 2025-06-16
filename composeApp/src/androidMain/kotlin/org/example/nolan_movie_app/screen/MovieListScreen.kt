@@ -52,10 +52,6 @@ fun MovieListScreen(
     val movies by viewModel.movies.collectAsState()
     val query by viewModel.query.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadTrending()
-    }
-
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(

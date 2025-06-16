@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.time.debounce
 import org.example.nolan_movie_app.UIState
 import org.example.nolan_movie_app.domain.model.Movie
 import org.example.nolan_movie_app.domain.usecase.GetTrendingMoviesUseCase
@@ -46,7 +45,7 @@ class MovieViewModel(
         _query.value = newQuery
     }
 
-    fun loadTrending() {
+    private fun loadTrending() {
         viewModelScope.launch {
             _movies.value = UIState.Loading
             when (val result = getTrending()) {
@@ -60,7 +59,7 @@ class MovieViewModel(
         }
     }
 
-    fun search(query: String) {
+    private fun search(query: String) {
         viewModelScope.launch {
             _movies.value = UIState.Loading
             when (val result = searchMovies(query)) {

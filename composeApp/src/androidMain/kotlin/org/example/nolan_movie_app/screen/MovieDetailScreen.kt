@@ -149,7 +149,6 @@ private fun CombinePosterBackdrop(detail: MovieDetail, onBack: () -> Unit) {
             contentScale = ContentScale.Crop
         )
 
-        // Gradient overlay (optional)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -161,7 +160,6 @@ private fun CombinePosterBackdrop(detail: MovieDetail, onBack: () -> Unit) {
                 )
         )
 
-        // Poster + title over backdrop
         Row(
             modifier = Modifier
                 .align(Alignment.BottomStart)

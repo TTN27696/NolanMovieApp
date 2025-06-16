@@ -1,5 +1,6 @@
 package org.example.nolan_movie_app.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,10 @@ import org.example.nolan_movie_app.viewModel.MovieViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
+fun MovieListScreen(
+    viewModel: MovieViewModel = koinViewModel(),
+    onMovieClick: (Int) -> Unit,
+) {
     val movies by viewModel.movies.collectAsState()
     var query by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
@@ -105,7 +109,9 @@ fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(data) { movie ->
-                        MovieItem(movie = movie)
+                        MovieItem(movie = movie) {
+                            onMovieClick(movie.id)
+                        }
                     }
                 }
             }
@@ -121,10 +127,11 @@ fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
 }
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(movie: Movie,  onClick: () -> Unit) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column {

@@ -20,4 +20,10 @@ class TmdbApi(
             parameter("language", "en-US")
         }
     }
+
+    suspend fun getMovieDetail(id: Int): HttpResponse {
+        return client.get("https://api.themoviedb.org/3/movie/$id") {
+            parameter("language", "en-US")
+        }
+    }
 }

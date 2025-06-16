@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import org.example.nolan_movie_app.UIState
@@ -40,6 +47,8 @@ import org.koin.androidx.compose.koinViewModel
 fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
     val movies by viewModel.movies.collectAsState()
     var query by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
         viewModel.loadTrending()
@@ -47,20 +56,32 @@ fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(16.dp)) {
-
-        // Search TextField
+        .padding(
+            horizontal = 16.dp,
+            vertical = 40.dp
+        )
+    ) {
         OutlinedTextField(
             value = query,
             onValueChange = {
                 query = it
-                viewModel.search(it)
             },
             label = { Text("Search movie") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            singleLine = true
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    if (query.isEmpty()) viewModel.loadTrending()
+                    else viewModel.search(query)
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                }
+            )
         )
         when (movies) {
             is UIState.Loading -> {
@@ -74,7 +95,12 @@ fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp),
+                    contentPadding = PaddingValues(
+                        top = 8.dp,
+                        start = 8.dp,
+                        end = 8.dp,
+                        bottom = 32.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -98,8 +124,7 @@ fun MovieListScreen(viewModel: MovieViewModel = koinViewModel()) {
 fun MovieItem(movie: Movie) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column {
@@ -113,9 +138,12 @@ fun MovieItem(movie: Movie) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 text = movie.title,
                 style = MaterialTheme.typography.titleSmall,
-                maxLines = 1
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

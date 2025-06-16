@@ -17,10 +17,16 @@ data class MovieDto(
     val title: String? = null,
     @SerialName("poster_path")
     val posterPath: String? = null,
+    @SerialName("vote_average")
+    val voteAverage: Double? = null,
+    @SerialName("release_date")
+    val releaseDate: String? = null,
 )
 
 fun MovieDto.toDomain(): Movie = Movie(
     id = id ?: 0,
     title = title ?: "",
-    posterUrl = posterPath ?: ""
+    posterUrl = posterPath ?: "",
+    releaseDate = releaseDate ?: "",
+    voteAverage = voteAverage ?: 0.0
 )

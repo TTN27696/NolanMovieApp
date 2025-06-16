@@ -145,6 +145,20 @@ fun MovieItem(movie: Movie) {
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                text = "Release: ${movie.releaseDate}",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                text = "Vote: ${movie.voteAverage}",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 data class Movie (
     val id: Int,
     val title: String,
-    val posterUrl: String
+    val posterUrl: String,
+    val voteAverage: Double,
+    val releaseDate: String
 ) {
     val formatPosterUrl: String
         get() = "https://image.tmdb.org/t/p/w500$posterUrl"

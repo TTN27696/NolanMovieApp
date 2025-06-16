@@ -3,6 +3,7 @@ package org.example.nolan_movie_app.data.cache
 import com.russhwolf.settings.Settings
 import kotlinx.serialization.builtins.ListSerializer
 import org.example.nolan_movie_app.domain.model.Movie
+import org.example.nolan_movie_app.domain.model.MovieDetail
 import org.example.nolan_movie_app.utils.sharedJson
 
 class SettingsCacheDataSource(private val settings: Settings) : CacheDataSource {
@@ -26,13 +27,13 @@ class SettingsCacheDataSource(private val settings: Settings) : CacheDataSource 
         return settings.getLongOrNull(trendingTimeKey)
     }
 
-    override suspend fun saveMovieDetail(movie: Movie) {
-        settings.putString("$detailPrefix${movie.id}", sharedJson.encodeToString(Movie.serializer(), movie))
+    override suspend fun saveMovieDetail(id: Int, detail: MovieDetail) {
+        settings.putString("$detailPrefix${id}", sharedJson.encodeToString(MovieDetail.serializer(), detail))
     }
 
-    override suspend fun getMovieDetail(id: Int): Movie? {
+    override suspend fun getMovieDetail(id: Int): MovieDetail? {
         return settings.getStringOrNull("$detailPrefix$id")?.let {
-            runCatching { sharedJson.decodeFromString<Movie>(it) }.getOrNull()
+            runCatching { sharedJson.decodeFromString<MovieDetail>(it) }.getOrNull()
         }
     }
 }

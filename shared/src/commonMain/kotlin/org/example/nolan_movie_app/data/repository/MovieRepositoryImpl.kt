@@ -23,11 +23,15 @@ class MovieRepositoryImpl(
 
     override suspend fun getTrendingMovies(): Result<List<Movie>> {
         val now = getTimeMillis()
-        val cached = cache.getTrendingMovies()
-        val timestamp = cache.getTrendingMoviesTimestamp()
+        try {
+            val cached = cache.getTrendingMovies()
+            val timestamp = cache.getTrendingMoviesTimestamp()
 
-        if (cached != null && timestamp != null && now - timestamp < timeMillisOfADay) {
-            return Result.Success(cached)
+            if (cached != null && timestamp != null && now - timestamp < timeMillisOfADay) {
+                return Result.Success(cached)
+            }
+        } catch (e: Exception) {
+            println("Cache error: ${e.message}")
         }
 
         return safeApiCall(
@@ -35,7 +39,11 @@ class MovieRepositoryImpl(
             onSuccess = { response ->
                 val dto = sharedJson.decodeFromString<MovieResponseDto>(response.bodyAsText())
                 val movies = dto.results?.map { it.toDomain() } ?: emptyList()
-                cache.saveTrendingMovies(movies, now)
+                try {
+                    cache.saveTrendingMovies(movies, now)
+                } catch (e: Exception) {
+                    println("Cache save error: ${e.message}")
+                }
                 movies
             }
         )
@@ -50,13 +58,28 @@ class MovieRepositoryImpl(
             }
         )
 
-    override suspend fun getMovieDetail(id: Int): Result<MovieDetail> =
-        safeApiCall(
+    override suspend fun getMovieDetail(id: Int): Result<MovieDetail> {
+        try {
+            val cached = cache.getMovieDetail(id)
+            if (cached != null) {
+                return Result.Success(cached)
+            }
+        } catch (e: Exception) {
+            println("Cache read error: ${e.message}")
+        }
+
+        return safeApiCall(
             apiCall = { api.getMovieDetail(id) },
             onSuccess = { response ->
                 val dto = sharedJson.decodeFromString<MovieDetailDto>(response.bodyAsText())
-                dto.toDomain()
+                val detail = dto.toDomain()
+                try {
+                    cache.saveMovieDetail(id, detail)
+                } catch (e: Exception) {
+                    println("Cache save error: ${e.message}")
+                }
+                detail
             }
         )
-
+    }
 }

@@ -50,9 +50,7 @@ fun MovieListScreen(
     onMovieClick: (Int) -> Unit,
 ) {
     val movies by viewModel.movies.collectAsState()
-    var query by remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val query by viewModel.query.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadTrending()
@@ -68,7 +66,7 @@ fun MovieListScreen(
         OutlinedTextField(
             value = query,
             onValueChange = {
-                query = it
+                viewModel.onQueryChanged(it)
             },
             label = { Text("Search movie") },
             modifier = Modifier
@@ -76,15 +74,7 @@ fun MovieListScreen(
                 .padding(bottom = 16.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    if (query.isEmpty()) viewModel.loadTrending()
-                    else viewModel.search(query)
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
-                }
+                imeAction = ImeAction.Done
             )
         )
         when (movies) {

@@ -52,12 +52,13 @@ fun MovieListScreen(
     val movies by viewModel.movies.collectAsState()
     val query by viewModel.query.collectAsState()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(
-            horizontal = 16.dp,
-            vertical = 40.dp
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = 16.dp,
+                vertical = 40.dp
+            )
     ) {
         OutlinedTextField(
             value = query,
@@ -113,7 +114,7 @@ fun MovieListScreen(
 }
 
 @Composable
-fun MovieItem(movie: Movie,  onClick: () -> Unit) {
+fun MovieItem(movie: Movie, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,7 +132,9 @@ fun MovieItem(movie: Movie,  onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
                 text = movie.title,
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
@@ -140,14 +143,18 @@ fun MovieItem(movie: Movie,  onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
                 text = "Release: ${movie.releaseDate}",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
                 text = "Vote: ${movie.voteAverage}",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center
